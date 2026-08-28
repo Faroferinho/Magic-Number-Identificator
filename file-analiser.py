@@ -59,6 +59,16 @@ def get_magicnumbers(file_type):
         return[
             binascii.unhexlify(b'FD377A585A00')
         ]
+    elif file_type in ["zip", "aar", "apk", "docx", "epub", "ipa", "jar", "kmz", "maff", "msix", "odp", "ods", "odt", "pk3", "pk4", "pptx", "usdz", "vsdx", "xlsx", "xpi", "whl"]:
+        return[
+            binascii.unhexlify(b'504B0304'),
+            binascii.unhexlify(b'504B0506'),
+            binascii.unhexlify(b'504B0708')
+        ]
+    elif file_type in ["bmp", "dib", "gz", "exe", "dll", "mui", "sys", "scr", "cpl", "ocx", "ax", "iec", "ime", "rs", "tsp", "fon", "efi"]:
+        return[
+            binascii.unhexlify(b'4D5A')
+        ]
     return []
 
 def get_binary_header(file=str):
@@ -68,13 +78,13 @@ def get_binary_header(file=str):
         type = get_type(file)
         signatures = get_magicnumbers(type)
 
-        if (type in ["bmp", "dib", "gz"]):
+        if (type in ["bmp", "dib", "gz", "exe", "dll", "mui", "sys", "scr", "cpl", "ocx", "ax", "iec", "ime", "rs", "tsp", "fon", "efi"]):
             header = binary_file.read(2)
             if(header in signatures):
                 return True
             else:
                 print("Header " + str(header))
-        elif(type in ["jpg", "jpeg", "jp2", "j2k", "jpf", "jpm", "jpg2", "j2c", "jpc", "jpx", "mj2"]):
+        elif(type in ["jpg", "jpeg", "jp2", "j2k", "jpf", "jpm", "jpg2", "j2c", "jpc", "jpx", "mj2", "zip", "aar", "apk", "docx", "epub", "ipa", "jar", "kmz", "maff", "msix", "odp", "ods", "odt", "pk3", "pk4", "pptx", "usdz", "vsdx", "xlsx", "xpi", "whl"]):
             header = binary_file.read(4)
             if(header in signatures):
                 return True
@@ -123,12 +133,12 @@ def get_binary_header(file=str):
         return False
 
 files = [
-    ""
+
 ]
 
 for file_path in files:
     match = get_binary_header(file_path)
-    if get_magicnumbers(get_type(file_path)).count < 0:    
+    if get_magicnumbers(get_type(file_path)).count != 0:    
         if not match:
             print(file_path.split("\\")[-1] + " - Header Match =" + str(match) + "\n")
         else:
