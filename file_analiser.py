@@ -1,12 +1,19 @@
 import binascii
 
+class signature:
+    def __init__(self, path=str):
+        self.file_name = path.split("/")[-1]
+        self.expected_signatures = get_magicnumbers(get_type(self.file_name))
+        self.actual_signature = get_signature(path)
+        self.match_signature = True if self.actual_signature in self.expected_signatures else False
+        
 
-def get_type(file=str):
+def get_type(path=str):
     # Get the character sequence after the last dot in a file name.
     result = ""
 
-    if(file.find(".")):
-        list = file.split(".")
+    if(path.find(".")):
+        list = path.split(".")
         return list[-1]
 
     return result
@@ -71,77 +78,30 @@ def get_magicnumbers(file_type):
         ]
     return []
 
-def get_binary_header(file=str):
-    header = b''
-
-    with open(file, 'rb') as binary_file:
-        type = get_type(file)
-        signatures = get_magicnumbers(type)
-
+def get_signature(path=str):
+    type = get_type(path)
+    with open(path, 'rb') as binary_file:
         if (type in ["bmp", "dib", "gz", "exe", "dll", "mui", "sys", "scr", "cpl", "ocx", "ax", "iec", "ime", "rs", "tsp", "fon", "efi"]):
-            header = binary_file.read(2)
-            if(header in signatures):
-                return True
-            else:
-                print("Header " + str(header))
+            return binary_file.read(2)
+        
         elif(type in ["jpg", "jpeg", "jp2", "j2k", "jpf", "jpm", "jpg2", "j2c", "jpc", "jpx", "mj2", "zip", "aar", "apk", "docx", "epub", "ipa", "jar", "kmz", "maff", "msix", "odp", "ods", "odt", "pk3", "pk4", "pptx", "usdz", "vsdx", "xlsx", "xpi", "whl"]):
-            header = binary_file.read(4)
-            if(header in signatures):
-                return True
-            else:
-                print("Header " + str(header))
-
+            return binary_file.read(4)
+        
         elif type in ["gif", "7z", "xz"]:
-            header = binary_file.read(6)
-            if(header in signatures):
-                return True
-            else:
-                print("Header " + str(header))
+            return binary_file.read(6)
 
         elif type in ["blend"]:
-                    header = binary_file.read(7)
-                    if(header in signatures):
-                        return True
-                    else:
-                        print("Header " + str(header))
+            return binary_file.read(7)
 
         elif type in ["png", "deb", "doc", "xls", "ppt", "msi", "msg"]:
-            header = binary_file.read(8)
-            if(header in signatures):
-                return True
-            else:
-                print("Header " + str(header))
+            return binary_file.read(8)
 
         elif type == "mp4":
             binary_file.seek(4,1)
-            header = binary_file.read(4)
-            if(header in signatures):
-                return True
-            else:
-                print("Header " + str(header))
+            return binary_file.read(4)
 
         elif type == "webp":
             header = binary_file.read(4)
             binary_file.seek(4,1)
             header += binary_file.read(4)
-
-            if(header in signatures):
-                return True
-            else:
-                print("Header " + str(header))
-            
-        return False
-
-files = [
-
-]
-
-for file_path in files:
-    match = get_binary_header(file_path)
-    if get_magicnumbers(get_type(file_path)).count != 0:    
-        if not match:
-            print(file_path.split("\\")[-1] + " - Header Match =" + str(match) + "\n")
-        else:
-            print("File " + file_path.split("\\")[-1] + " matches what is expected")
-    else:
-        print("Type not suported, sorry :(")
+            return header
