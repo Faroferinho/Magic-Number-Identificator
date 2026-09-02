@@ -1,0 +1,13 @@
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: DockerFile
+    ports:
+      - "8081:8081"
+    volumes:
+      - file_storage_volume:/app/data/files
+    environment:
+      - PYTHONUNBUFFERED=1
+volumes:
+  file_storage_volume:
