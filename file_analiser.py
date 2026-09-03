@@ -2,7 +2,7 @@ import binascii
 
 class signature:
     def __init__(self, path=str):
-        self.file_name = path.split("\\")[-1]
+        self.file_name = path.split("/")[-1]
         self.expected_signatures = get_magicnumbers(get_type(self.file_name))
         self.actual_signature = get_signature(path)
         self.match_signature = True if self.actual_signature in self.expected_signatures else False

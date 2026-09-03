@@ -1,13 +1,16 @@
 services:
-  api:
+  file-analyser-app:
     build: 
       context: .
       dockerfile: DockerFile
+    container_name: file_analyser_service
     ports:
-      - "8081:8081"
+      - "8000:8000"
     volumes:
       - file_storage_volume:/app/data/files
     environment:
       - PYTHONUNBUFFERED=1
 volumes:
   file_storage_volume:
+    name: file_storage_volume
+    external: true
